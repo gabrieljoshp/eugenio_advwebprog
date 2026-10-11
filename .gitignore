@@ -28,6 +28,8 @@ eugenio-server/.env.example
 .vercel/
 .vercel
 
+.codex
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

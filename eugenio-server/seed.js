@@ -63,6 +63,28 @@ const seed = async () => {
         username: "john",
         isActive: true,
       },
+      {
+        firstName: "Angela",
+        lastName: "Reyes",
+        email: "angela@example.com",
+        password: "secret123",
+        contactNumber: "09171234567",
+        address: "Quezon City",
+        role: "customer",
+        username: "angela",
+        isActive: true,
+      },
+      {
+        firstName: "Paolo",
+        lastName: "Garcia",
+        email: "paolo@example.com",
+        password: "secret123",
+        contactNumber: "09181234568",
+        address: "Pasig City",
+        role: "customer",
+        username: "paolo",
+        isActive: true,
+      },
     ];
 
     const savedUsers = await User.insertMany(
@@ -451,7 +473,123 @@ const seed = async () => {
         comment: "Lightweight and looks good with my NU apparel.",
         isVerifiedPurchase: true,
       },
+      {
+        product: products[0]._id,
+        user: savedUsers[3]._id,
+        rating: 4,
+        title: "Solid everyday cap",
+        comment: "The fit is comfortable and the embroidered logo is clean.",
+        isVerifiedPurchase: true,
+      },
+      {
+        product: products[0]._id,
+        user: savedUsers[4]._id,
+        rating: 5,
+        title: "Campus essential",
+        comment: "Good quality cap for sunny days around campus.",
+        isVerifiedPurchase: false,
+      },
+      {
+        product: products[1]._id,
+        user: savedUsers[2]._id,
+        rating: 4,
+        title: "Comfortable band",
+        comment: "Lightweight, durable, and easy to wear every day.",
+        isVerifiedPurchase: true,
+      },
+      {
+        product: products[1]._id,
+        user: savedUsers[3]._id,
+        rating: 5,
+        title: "Nice school accessory",
+        comment: "The colors are vibrant and it feels well made.",
+        isVerifiedPurchase: false,
+      },
+      {
+        product: products[2]._id,
+        user: savedUsers[2]._id,
+        rating: 5,
+        title: "Reliable ID holder",
+        comment: "It keeps my ID secure and the strap is comfortable.",
+        isVerifiedPurchase: true,
+      },
+      {
+        product: products[2]._id,
+        user: savedUsers[3]._id,
+        rating: 4,
+        title: "Good value",
+        comment: "A sturdy lanyard that works well for daily classes.",
+        isVerifiedPurchase: false,
+      },
+      {
+        product: products[3]._id,
+        user: savedUsers[3]._id,
+        rating: 5,
+        title: "Fun sticker pack",
+        comment: "The designs are sharp and there are plenty in the set.",
+        isVerifiedPurchase: true,
+      },
+      {
+        product: products[3]._id,
+        user: savedUsers[4]._id,
+        rating: 4,
+        title: "Great for my laptop",
+        comment: "The stickers adhere well and brighten up my notebook.",
+        isVerifiedPurchase: false,
+      },
+      {
+        product: products[4]._id,
+        user: savedUsers[3]._id,
+        rating: 5,
+        title: "Comfortable for PE",
+        comment: "Breathable fabric with a great fit for active days.",
+        isVerifiedPurchase: true,
+      },
+      {
+        product: products[4]._id,
+        user: savedUsers[4]._id,
+        rating: 4,
+        title: "Good athletic shirt",
+        comment: "Comfortable material and the size matches the guide.",
+        isVerifiedPurchase: false,
+      },
+      {
+        product: products[5]._id,
+        user: savedUsers[2]._id,
+        rating: 4,
+        title: "Warm and soft",
+        comment: "A cozy sweater for cold lecture halls.",
+        isVerifiedPurchase: true,
+      },
+      {
+        product: products[6]._id,
+        user: savedUsers[2]._id,
+        rating: 5,
+        title: "Premium jacket",
+        comment: "The material feels durable and the varsity style stands out.",
+        isVerifiedPurchase: false,
+      },
+      {
+        product: products[7]._id,
+        user: savedUsers[3]._id,
+        rating: 4,
+        title: "Easy to style",
+        comment: "Soft scarf that pairs nicely with a campus outfit.",
+        isVerifiedPurchase: true,
+      },
     ]);
+
+    const reviewSummaries = await Review.aggregate([
+      { $group: { _id: "$product", rating: { $avg: "$rating" }, reviewCount: { $sum: 1 } } },
+    ]);
+    await Promise.all(
+      reviewSummaries.map(({ _id, rating, reviewCount }) =>
+        Product.findByIdAndUpdate(_id, {
+          rating: Number(rating.toFixed(1)),
+          reviewCount,
+        }),
+      ),
+    );
 
     console.log("Seed data inserted successfully!");
     console.log(`${products.length} products inserted successfully.`);

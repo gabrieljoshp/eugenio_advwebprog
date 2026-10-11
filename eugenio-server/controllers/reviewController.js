@@ -1,10 +1,24 @@
 const Review = require("../models/reviewModel");
+const mongoose = require("mongoose");
 const { HttpStatus } = require("../config/constants");
 const { successResponse, errorResponse } = require("../config/response");
 
 const getReviews = async (req, res) => {
   try {
-    const reviews = await Review.find({}).populate("product").populate("user");
+    const filter = {};
+    if (req.query.product) {
+      if (!mongoose.isValidObjectId(req.query.product)) {
+        return errorResponse(res, {
+          status: HttpStatus.BAD_REQUEST,
+          message: "Invalid product id.",
+        });
+      }
+      filter.product = req.query.product;
+    }
+    const reviews = await Review.find(filter)
+      .sort({ createdAt: -1 })
+      .populate("product", "productName slug")
+      .populate("user", "firstName lastName username");
     return successResponse(res, {
       message: "Reviews retrieved successfully.",
       count: reviews.length,

@@ -26,6 +26,20 @@ const ProductCard = ({ product, index }) => {
         {name}
       </h3>
       <p className="mt-2 text-base font-bold text-zinc-900">₱{product.price}</p>
+      <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <span
+          className="font-semibold text-amber-600"
+          aria-label={`${product.rating ?? 0} out of 5 stars`}
+        >
+          ★ {Number(product.rating || 0).toFixed(1)}
+        </span>
+        <span className="text-zinc-600">
+          {product.reviewCount || 0} review{product.reviewCount === 1 ? "" : "s"}
+        </span>
+        <span className="rounded-full border border-zinc-300 px-2 py-0.5 text-xs font-medium text-zinc-700">
+          {product.inventoryStatus || `${product.stock || 0} in stock`}
+        </span>
+      </div>
       <p className="mt-3 text-sm leading-6 text-zinc-600">
         {description.substring(0, 120)}{description.length > 120 ? "..." : ""}
       </p>
